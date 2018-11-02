@@ -75,9 +75,9 @@ import { Route, Switch } from "react-router-dom";
 ### Route Rendering Props
 ~~You have three prop choices for how you render a component for a given <Route>: component, render, and children. You can check out the <Route> documentation for more information on each one, but here we’ll focus on component and render because those are the two you will almost always use.~~
 <Route>的componet属性，有三种写法：
-* [component](#https://reacttraining.com/react-router/web/api/Route/component)
-* [render](#https://reacttraining.com/react-router/web/api/Route/render-func)
-* [children](#https://reacttraining.com/react-router/web/api/Route/children-func)
+* [component](https://reacttraining.com/react-router/web/api/Route/component)
+* [render](https://reacttraining.com/react-router/web/api/Route/render-func)
+* [children](https://reacttraining.com/react-router/web/api/Route/children-func)
 
 具体用法可以参照<Route>文档，这里我们先简单介绍一下component和render。
 
