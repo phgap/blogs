@@ -31,7 +31,8 @@
 首先，从[github](https://github.com/ReactTraining/react-router)上，得到与文档版本对应的代码。<br>
 **我:**
 接着看路径结构。是这样的：
-![]()
+
+![](https://github.com/phgap/blogs/blob/master/react-router/imgs/00_project_structure.png)
 
 >:expressionless::
 >接下来我一般就是找教程先简单过一遍，代码下下来然后把node__modules复制出来debugger
@@ -52,11 +53,12 @@
 >这个都差不多
 
 **我:**
-对。打开各个文件夹，会发现，package里面的东西，是我们想要的源码。
+对。打开各个文件夹，会发现，packages里面的东西，是我们想要的源码。
+#### todo图
+![01_react-router-packages-structure.png]()
 我们肯定先从源码看起，因为这次读源码首先要学习的是实现原理，并不是如何构建<br>
 **我:**
-那咱们就从-dom开始呗
-#### todo图
+那咱们就从[react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom)开始呗
 **我:**
 打开react-router-dom,奔着module去
 
