@@ -805,7 +805,7 @@ render非常简单，就是把context的value值，修改了一下
 **我:**
 对。根据React-router的使用，估计就是每个<Route>，都会监听这个context，然后进行路径匹配，决定是否要渲染自己的component指定的内容<br>
 **我:**
-接下来，我们就可以继续看<Route>这个组件了。先吃饭去吧，且听下回分解。
+接下来，我们就可以继续看&lt;Route&gt;这个组件了。先吃饭去吧，且听下回分解。
 
 
 >:expressionless::
