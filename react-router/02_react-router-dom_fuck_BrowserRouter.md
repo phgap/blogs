@@ -54,11 +54,13 @@
 
 **我:**
 对。打开各个文件夹，会发现，packages里面的东西，是我们想要的源码。
-#### todo图
-![01_react-router-packages-structure.png]()
+
+![01_react-router-packages-structure.png](https://github.com/phgap/blogs/blob/master/react-router/imgs/01_react-router-packages-structure.png)
+
+**我:**
 我们肯定先从源码看起，因为这次读源码首先要学习的是实现原理，并不是如何构建<br>
 **我:**
-那咱们就从[react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom)开始呗
+那咱们就从[react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom)开始呗<br>
 **我:**
 打开react-router-dom,奔着module去
 
@@ -69,10 +71,7 @@
 嗯
 
 >:expressionless::
->为啥看module
-
-**我:**
-docs、tools、都是附属的啊
+>为啥看module<br>
 >:expressionless::
 >不应该先看package。json和rollup么
 
@@ -132,8 +131,7 @@ docs、tools、都是附属的啊
 >确实如此
 
 **我:**
-都揉到一起，会觉得非常乱，最后就放弃了
-
+都揉到一起，会觉得非常乱，最后就放弃了<br>
 **我:**
 而且，我们学习源码，也不一定要把源码中的每个特性都在同一个项目中都用到，还是要分开学，分开用
 
@@ -146,7 +144,44 @@ docs、tools、都是附属的啊
 那就先看[BrowserRouter.js](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/modules/BrowserRouter.js)了。<br>
 **我:**
 打开文件，看了一下，挺开心，代码没几行
+```jsx
+import React from "react";
+import { Router } from "react-router";
+import { createBrowserHistory as createHistory } from "history";
+import PropTypes from "prop-types";
+import warning from "tiny-warning";
 
+/**
+ * The public API for a <Router> that uses HTML5 history.
+ */
+class BrowserRouter extends React.Component {
+  history = createHistory(this.props);
+
+  render() {
+    return <Router history={this.history} children={this.props.children} />;
+  }
+}
+
+if (__DEV__) {
+  BrowserRouter.propTypes = {
+    basename: PropTypes.string,
+    children: PropTypes.node,
+    forceRefresh: PropTypes.bool,
+    getUserConfirmation: PropTypes.func,
+    keyLength: PropTypes.number
+  };
+
+  BrowserRouter.prototype.componentDidMount = function() {
+    warning(
+      !this.props.history,
+      "<BrowserRouter> ignores the history prop. To use a custom history, " +
+        "use `import { Router }` instead of `import { BrowserRouter as Router }`."
+    );
+  };
+}
+
+export default BrowserRouter;
+```
 >:expressionless::
 >然后一脸懵逼记不住， 看不懂
 
@@ -155,20 +190,8 @@ docs、tools、都是附属的啊
 **我:**
 先看看依赖了哪些组件<br>
 **我:**
-我这个源码，应该是旧版本的，跟你下载的不太一样，我待会下载一个新版本。
+我最感兴趣的是history和react-router。如下：
 
->:expressionless::
->旧的好<br>
->:expressionless::
->真的
-
-**我:**
-不，我觉得新的好，旧的context使用起来非常不方便<br>
-**我:**
-新的，用Provider组件和Comsumer组件给封装了<br>
-
-**我:**
-回到[BrowserRouter.js](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/modules/BrowserRouter.js)。从依赖看，我最感兴趣的是 history和react-router。如下：
 ```jsx
 import React from "react";
 import { Router } from "react-router";
@@ -190,10 +213,11 @@ import warning from "tiny-warning";
 >:expressionless::
 >你的兴趣点对<br>
 >:expressionless::
->我以前看过源码相关教程， 了解一点history<br>
+>我以前看过源码相关教程，了解一点history<br>
 
 **我:**
-嗯。官网说了啊。如下：
+嗯。官网说了啊。
+
 >#### Routers
 >At the core of every React Router application should be a router component. For web projects, react-router-dom provides <BrowserRouter> and <HashRouter> routers. Both of these will create a specialized ***history*** object for you.
 
@@ -206,7 +230,7 @@ import warning from "tiny-warning";
 **我:**
 另外，之前说过，这个文件源码行数很少，肯定依赖了其他的组件。看起来，就这个react-router担当了重要责任。<br>
 **我:**
-所以现在有两个todo:**history**和**react-router**
+所以现在有两个Todo:**history**和**react-router**
 
 >:expressionless::
 >嗯
@@ -214,7 +238,7 @@ import warning from "tiny-warning";
 **我:**
 那一会需要关注的就是react-router这个包了<br>
 **我:**
-我先不管刚才的两个todo，我把这个组件([BrowserRouter](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/modules/BrowserRouter.js))先看看，反正代码又不多<br>
+我暂时先不管刚才的两个todo，我把这个组件([BrowserRouter](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/modules/BrowserRouter.js))先看看，反正代码又不多<br>
 ```jsx
 class BrowserRouter extends React.Component {
   history = createHistory(this.props);
@@ -245,7 +269,7 @@ if (__DEV__) {
 **我:**
 我要把if(__DEV__)的分支删掉，因为我现在要看的是最最核心的东西<br>
 **我:**
-那就俩东西了
+那就只剩俩东西了
 ```jsx
 //......
 class BrowserRouter extends React.Component {
@@ -260,8 +284,6 @@ class BrowserRouter extends React.Component {
 
 **我:**
 切记过早的进入__DEV__,那个是方便开发用的，通常与核心的概念关系不大<br>
-
-
 **我:**
 所以现在BrowserRouter的任务，就是创建一个history对象，传给react-router的Router
 
@@ -272,7 +294,7 @@ class BrowserRouter extends React.Component {
 嗯，你说
 
 >:expressionless::
->你会选择看router还是createHistory
+>你会选择看react-router还是history
 
 **我:**
 哈哈，这个时候，我其实想看一眼hashRouter
@@ -298,11 +320,11 @@ import warning from "tiny-warning";
 还真是
 
 **我:**
-那我就把关注点，放在router上了
+那我就把关注点，放在react-router上了
 **我:**
 因为
 1. history我猜出他是干啥了，跟浏览器路径有关
-2. router里面用到它了，我等用到了，不知道做什么的时候，在去看history，这样行不行
+2. router里面用到history了，我等用到了，不知道具体做什么的时候，再去看history，这样行不行
 
 >:expressionless::
 >恩啊
@@ -310,7 +332,7 @@ import warning from "tiny-warning";
 **我:**
 回到这个路径
 
-#### todo 图
+![01_react-router-packages-structure.png](https://github.com/phgap/blogs/blob/master/react-router/imgs/01_react-router-packages-structure.png)
 
 **我:**
 去看react-router
@@ -353,6 +375,15 @@ import { Router } from "react-router";
 
 **我:**
 进index.js吧<br>
+```jsx
+"use strict";
+
+if (process.env.NODE_ENV === "production") {
+  module.exports = require("./cjs/react-router.min.js");
+} else {
+  module.exports = require("./cjs/react-router.js");
+}
+```
 **我:**
 代码不多，分成production和else分支<br>
 **我:**
@@ -425,6 +456,129 @@ import { Router } from "react-router";
 现在打开它，一看，挺像啊，那先看看有多少行<br>
 **我:**
 百十来行，有信心了，哈哈
+```jsx
+import React from "react";
+import PropTypes from "prop-types";
+import warning from "tiny-warning";
+
+import RouterContext from "./RouterContext";
+import warnAboutGettingProperty from "./utils/warnAboutGettingProperty";
+
+function getContext(props, state) {
+  return {
+    history: props.history,
+    location: state.location,
+    match: Router.computeRootMatch(state.location.pathname),
+    staticContext: props.staticContext
+  };
+}
+
+/**
+ * The public API for putting history on context.
+ */
+class Router extends React.Component {
+  static computeRootMatch(pathname) {
+    return { path: "/", url: "/", params: {}, isExact: pathname === "/" };
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      location: props.history.location
+    };
+
+    // This is a bit of a hack. We have to start listening for location
+    // changes here in the constructor in case there are any <Redirect>s
+    // on the initial render. If there are, they will replace/push when
+    // they mount and since cDM fires in children before parents, we may
+    // get a new location before the <Router> is mounted.
+    this._isMounted = false;
+    this._pendingLocation = null;
+
+    if (!props.staticContext) {
+      this.unlisten = props.history.listen(location => {
+        if (this._isMounted) {
+          this.setState({ location });
+        } else {
+          this._pendingLocation = location;
+        }
+      });
+    }
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+
+    if (this._pendingLocation) {
+      this.setState({ location: this._pendingLocation });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.unlisten) this.unlisten();
+  }
+
+  render() {
+    const context = getContext(this.props, this.state);
+
+    return (
+      <RouterContext.Provider
+        children={this.props.children || null}
+        value={context}
+      />
+    );
+  }
+}
+
+// TODO: Remove this in v5
+if (!React.createContext) {
+  Router.childContextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  Router.prototype.getChildContext = function() {
+    const context = getContext(this.props, this.state);
+
+    if (__DEV__) {
+      const contextWithoutWarnings = { ...context };
+
+      Object.keys(context).forEach(key => {
+        warnAboutGettingProperty(
+          context,
+          key,
+          `You should not be using this.context.router.${key} directly. It is private API ` +
+            "for internal use only and is subject to change at any time. Instead, use " +
+            "a <Route> or withRouter() to access the current location, match, etc."
+        );
+      });
+
+      context._withoutWarnings = contextWithoutWarnings;
+    }
+
+    return {
+      router: context
+    };
+  };
+}
+
+if (__DEV__) {
+  Router.propTypes = {
+    children: PropTypes.node,
+    history: PropTypes.object.isRequired,
+    staticContext: PropTypes.object
+  };
+
+  Router.prototype.componentDidUpdate = function(prevProps) {
+    warning(
+      prevProps.history === this.props.history,
+      "You cannot change <Router history>"
+    );
+  };
+}
+
+export default Router;
+```
 
 >:expressionless::
 >然后这么少的代码<br>
@@ -434,8 +588,15 @@ import { Router } from "react-router";
 **我:**
 对<br>
 **我:**
-但是你看，一个五个<br>
+但是你看，一共五个<br>
+```jsx
+import React from "react";
+import PropTypes from "prop-types";
+import warning from "tiny-warning";
 
+import RouterContext from "./RouterContext";
+import warnAboutGettingProperty from "./utils/warnAboutGettingProperty";
+```
 >:expressionless::
 >前三个忽略,一看就没用
 
@@ -450,7 +611,7 @@ import { Router } from "react-router";
 **我:**
 先不着急<br>
 **我:**
-因为如果他的名字叫做warn<br>
+因为如果第五个的名字叫做warnXXXX<br>
 **我:**
 是警告的意思
 
@@ -485,6 +646,17 @@ import { Router } from "react-router";
 那我去看一看吧，哈哈<br>
 **我:**
 进RouterContext.js这个文件了<br>
+```jsx
+// TODO: Replace with React.createContext once we can assume React 16+
+import createContext from "create-react-context";
+
+const context = createContext();
+
+context.Provider.displayName = "Router.Provider";
+context.Consumer.displayName = "Router.Consumer";
+
+export default context;
+```
 **我:**
 我次奥了
 
@@ -494,7 +666,7 @@ import { Router } from "react-router";
 **我:**
 十行不到，我把他搞定，我就可以专注Router.js那个文件了。那个文件里面，就是全部Router的核心了<br>
 **我:**
-标准context用法，店长推荐的<br>
+这里是标准context用法，店长推荐的<br>
 **我:**
 返回Router.js了哈
 
@@ -519,18 +691,60 @@ createContex就是最新的context用法，参加[这个](https://github.com/phg
 这个时候，可以稍微进入细节一些了<br>
 **我:**
 从第一个函数定义开始<br>
+```jsx
+function getContext(props, state) {
+  return {
+    history: props.history,
+    location: state.location,
+    match: Router.computeRootMatch(state.location.pathname),
+    staticContext: props.staticContext
+  };
+}
+```
 **我:**
-从名字看，是获取context的，返回一个对象，多余的不知道，先放着，往后看
+从名字看，是获取context的，返回一个**新创建**的对象，多余的不知道，先放着，往后看
 
 >:expressionless::
 >嗯
 
 **我:**
-我先大概扫一眼组件都有哪些方法，除了组件，还有其他哪些代码<br>
+我先大概扫一眼组件都有哪些方法。另外发现，除了组件，还有其他代码<br>
 **我:**
 除了组件内容，组件下面有一个判断，看起来应该是处理老版本react的兼容问题的。那我就先不看了<br>
+```jsx
+// TODO: Remove this in v5
+if (!React.createContext) {
+  Router.childContextTypes = {
+    router: PropTypes.object.isRequired
+  };
+
+  Router.prototype.getChildContext = function() {
+    const context = getContext(this.props, this.state);
+
+    if (__DEV__) {
+      const contextWithoutWarnings = { ...context };
+
+      Object.keys(context).forEach(key => {
+        warnAboutGettingProperty(
+          context,
+          key,
+          `You should not be using this.context.router.${key} directly. It is private API ` +
+            "for internal use only and is subject to change at any time. Instead, use " +
+            "a <Route> or withRouter() to access the current location, match, etc."
+        );
+      });
+
+      context._withoutWarnings = contextWithoutWarnings;
+    }
+
+    return {
+      router: context
+    };
+  };
+}
+```
 **我:**
-所以，重点就是在这个组件里面了。组件里面就是一些声明周期函数<br>
+所以，重点就是在这个组件里面了。组件里面就是一些生命周期函数<br>
 **我:**
 constructor、didMount<br>
 **我:**
@@ -543,6 +757,17 @@ constructor、didMount<br>
 一个一个看<br>
 **我:**
 重点是那个判断<br>
+```jsx
+if (!props.staticContext) {
+  this.unlisten = props.history.listen(location => {
+    if (this._isMounted) {
+      this.setState({ location });
+    } else {
+      this._pendingLocation = location;
+    }
+  });
+}
+```
 **我:**
 if (!props.staticContext) {}的作用，是保证Router里面再嵌套Router时，使用的是相同的history<br>
 **我:**
